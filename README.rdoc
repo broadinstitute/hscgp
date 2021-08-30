@@ -71,8 +71,6 @@ The run command explained in its entirety:
 * <b>-e MONGO_LOCALHOST= [MONGO_LOCALHOST]:</b> Name of the container running MongoDB.  Even though our two containers are linked, this needs to be set to allow Rails to communicate with the database.
 * <b>-e SENDGRID_USERNAME= [SENDGRID_USERNAME] -e SENDGRID_PASSWORD= [SENDGRID_PASSWORD]:</b> The credentials for Sendgrid to send emails.  Alternatively, you could decide to not use Sendgrid and configure the application to use a different SMTP server (would be done inside your environment's config file).
 * <b>-e SECRET_KEY_BASE= [SECRET_KEY_BASE]:</b> Setting the SECRET_KEY_BASE variable is necessary for creating secure cookies for authentication.  This variable automatically resets every time we restart the container.
-* <b>-e JWT_SECRET= [JWT_SECRET]:</b> Setting the JWT_SECRET variable is necessary for signing tokens to be validated by the IGV BAM file server.  If this is not set correctly, users cannot view BAM files in IGV.
-* <b>-e IGV_URL= [IGV_URL]:</b> The URL for the IGV BAM file server.  Contact {Andrew Zimmer}[mailto:andrew@broadinstitute.org] for more information about this service.
 * *hscgp_portal_docker*: This is the name of the image we created earlier.  If you chose a different name, please use that here.
 
 === PRODUCTION DEPLOYMENT
