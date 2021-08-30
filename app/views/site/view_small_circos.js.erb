@@ -1,0 +1,56 @@
+// remove existing plot & table
+$('#sm-results-target').empty();
+
+// render results
+$('#sm-results-target').html("<%= escape_javascript(render 'small_region_results') %>");
+
+// load small HISTOGRAM data
+var HISTOGRAM_SM_REGION  = [ "HISTOGRAM_SM_REGION" , {
+  maxRadius: 370,
+  minRadius: 250,
+  histogramFillColor: "#0000FF"
+} ,
+  <%= raw @sm_regions.to_json %>
+];
+// render plot
+BioCircosSmall = new BioCircos(BACKGROUND03, HISTOGRAM_SM_REGION, [BioCircosGenome[<%= @chrom_index %>]], {
+  target : "sm-biocircos-target",
+  svgWidth : 850,
+  svgHeight : 850,
+  chrPad : 0.04,
+  innerRadius: 375,
+  outerRadius: 390,
+  HISTOGRAMMouseOverDisplay : true,
+  HISTOGRAMMouseOverTooltipsHtml01 : "Chr : ",
+  HISTOGRAMMouseOverTooltipsHtml02 : "<br>Start : ",
+  HISTOGRAMMouseOverTooltipsHtml03 : "<br>End : ",
+  HISTOGRAMMouseOverTooltipsHtml04 : "<br>Identifier : ",
+  HISTOGRAMMouseOverTooltipsHtml05 : "<br>Value : ",
+  HISTOGRAMMouseOutDisplay : true,
+  HISTOGRAMMouseOutColor : "none",
+  HISTOGRAMMouseOverTooltipsPosition : "absolute",
+  HISTOGRAMMouseOverTooltipsBackgroundColor : "white",
+  HISTOGRAMMouseOverTooltipsBorderStyle : "solid",
+  HISTOGRAMMouseOverTooltipsBorderWidth : 1,
+  HISTOGRAMMouseOverTooltipsPadding : "3px",
+  HISTOGRAMMouseOverTooltipsBorderRadius : "3px",
+  HISTOGRAMMouseOverTooltipsOpacity : 0.8
+});
+
+BioCircosSmall.draw_genome(BioCircosSmall.genomeLength);
+
+// instantiate small structural variants DataTable
+$('#sm-region-table').DataTable({
+  "order": [[1, 'asc'],[2, 'asc']],
+  "sorting": true,
+  "dom": "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>><'table-responsive results-pad't><'row'<'col-sm-6'i><'col-sm-6'p>>",
+  language: {
+    search: "Filter All Results: "
+  },
+  buttons: [
+    'copy', 'csv', 'excel'
+  ]
+});
+
+// stop the spinner
+stopSpinner();

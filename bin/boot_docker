@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# usage error message
+usage=$(
+cat <<EOF
+$0 [OPTION]
+-n VALUE	set the name of the docker container
+-e VALUE	set the environment, defaults to 'development'. Running in 'production' will cause container to spawn headlessly.
+-d VALUE	set the project directory to mount inside Docker container, defaults to current working directory (`pwd`)
+-D	set the debug flag to true (for attaching IDE debug console to app)
+-m VALUE	set the MONGO_LOCALHOST variable, only used in development, defaults to 10.0.2.2
+-s VALUE	set the SECRET_KEY variable, necessary for decrypting DatStat connection info from the database (no default value)
+-j VALUE	set the JWT_SECRET variable, used for creating JWT tokens
+-i VALUE	set the IGV_URL, used for requesting BAM files from within IGV, defaults to hesc-igv.broadinstitute.org:5555
+-p VALUE	set the PROD_DATABASE_PASSWORD variable, used in production only (no default value)
+-h VALUE	set the PROD_HOSTNAME variable (used for callbacks)
+-u VALUE	set the SENDGRID_USERNAME variable (used for emails)
+-P VALUE	set the SENDGRID_PASSWORD variable (used for emails)
+-H COMMAND	print this text
+EOF
+)
+
+# defaults, note there is no default for PROD_DB_PASSWORD, SENDGRID_USERNAME or SENDGRID_PASSWORD
+CONTAINER_NAME="hscgp_portal"
+PROJECT_DIR=`pwd`
+PASSENGER_APP_ENV="development"
+MONGO_LOCALHOST="mongodb"
+PROD_HOSTNAME="hscgp.broadinstitute.org"
+IGV_URL="hesc-igv.broadinstitute.org"
+DEBUG="false"
+SECRET_KEY_BASE=`openssl rand -hex 64`
+source sendgrid.env
+
+while getopts "n:e:d:Dm:s:j:i:k:p:h:u:P:H" OPTION; do
+case $OPTION in
+	n)
+		CONTAINER_NAME="$OPTARG"
+		;;
+	e)
+		PASSENGER_APP_ENV="$OPTARG"
+		;;
+	d)
+		PROJECT_DIR="$OPTARG"
+		;;
+	D)
+		DEBUG="true"
+		;;
+	m)
+		MYSQL_LOCALHOST="$OPTARG"
+		;;
+	s)
+		SECRET_KEY="$OPTARG"
+		;;
+	j)
+		JWT_SECRET="$OPTARG"
+		;;
+	i)
+		IGV_URL="$OPTARG"
+		;;
+	p)
+		PROD_DATABASE_PASSWORD="$OPTARG"
+		;;
+	h)
+		PROD_HOSTNAME="$OPTARG"
+		;;
+	u)
+		SENDGRID_USERNAME="$OPTARG"
+		;;
+	P)
+		SENDGRID_PASSWORD="$OPTARG"
+		;;
+	H)
+		echo "$usage"
+		exit 0
+		;;
+	*)
+    echo "unrecognized option"
+    echo "$usage"
+    ;;
+	esac
+done
+
+if [[ $PASSENGER_APP_ENV = "production" ]]
+then
+	# generate random secret key for secure cookies
+	sudo docker run -d --name $CONTAINER_NAME -p 80:80 -p 443:443 -p 27017:27017 -p 587:587 -h $PROD_HOSTNAME -v $PROJECT_DIR:/home/app/webapp:rw -e PASSENGER_APP_ENV=$PASSENGER_APP_ENV -e MONGO_LOCALHOST=$MONGO_LOCALHOST -e PROD_DATABASE_PASSWORD=$PROD_DATABASE_PASSWORD -e SECRET_KEY_BASE=$SECRET_KEY_BASE -e PROD_HOSTNAME=$PROD_HOSTNAME -e SENDGRID_USERNAME=$SENDGRID_USERNAME -e SENDGRID_PASSWORD=$SENDGRID_PASSWORD -e JWT_SECRET=$JWT_SECRET -e IGV_URL=$IGV_URL hscgp_portal_docker
+else
+	if [[ $DEBUG = "true" ]]
+	then
+		sudo docker run --rm -it --name $CONTAINER_NAME -p 80:80 -p 443:443 -p 3000:3000 --link mongodb:mongodb -p 587:587 -p 1234:1234 -h localhost -v $PROJECT_DIR:/home/app/webapp:rw -e PASSENGER_APP_ENV=$PASSENGER_APP_ENV -e MONGO_LOCALHOST=$MONGO_LOCALHOST -e SENDGRID_USERNAME=$SENDGRID_USERNAME -e SENDGRID_PASSWORD=$SENDGRID_PASSWORD -e SECRET_KEY_BASE=$SECRET_KEY_BASE -e JWT_SECRET=$JWT_SECRET -e IGV_URL=$IGV_URL hscgp_portal_docker bash
+	else
+		sudo docker run --rm -it --name $CONTAINER_NAME -p 80:80 -p 443:443 --link mongodb:mongodb -p 587:587 -h localhost -v $PROJECT_DIR:/home/app/webapp:rw -e PASSENGER_APP_ENV=$PASSENGER_APP_ENV -e MONGO_LOCALHOST=$MONGO_LOCALHOST -e SENDGRID_USERNAME=$SENDGRID_USERNAME -e SENDGRID_PASSWORD=$SENDGRID_PASSWORD -e SECRET_KEY_BASE=$SECRET_KEY_BASE -e JWT_SECRET=$JWT_SECRET -e IGV_URL=$IGV_URL hscgp_portal_docker
+	fi
+fi

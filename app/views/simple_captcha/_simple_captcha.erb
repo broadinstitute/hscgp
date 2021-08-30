@@ -1,0 +1,16 @@
+<div class='row'>
+  <div class='col-sm-12 text-center'>
+    <%= simple_captcha_options[:image] %>
+  </div>
+  <div class='col-sm-12'>
+    <%= simple_captcha_options[:field] %>
+  </div>
+</div>
+
+<%= javascript_tag do %>
+
+	var captcha = $('#help_request_captcha');
+	captcha.addClass('form-control');
+	captcha.attr('placeholder', '<%= simple_captcha_options[:label] %>');
+
+<% end %>

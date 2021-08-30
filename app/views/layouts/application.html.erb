@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HSCGP Portal</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<%= stylesheet_link_tag    'application', media: 'all' %>
+	<%= stylesheet_link_tag    '//cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css', media: 'all' %>
+	<%= stylesheet_link_tag    '//cdn.datatables.net/buttons/1.1.2/css/buttons.bootstrap.min.css', media: 'all' %>
+  <%= stylesheet_link_tag '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', media: 'all' %>
+  <%= javascript_include_tag '//igv.org/web/release/2.7.9/dist/igv.min.js' %>
+  <%= javascript_include_tag 'application' %>
+	<%= javascript_include_tag '//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js' %>
+	<%= javascript_include_tag '//cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js' %>
+	<%= javascript_include_tag '//cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js' %>
+	<%= javascript_include_tag '//cdn.datatables.net/buttons/1.1.2/js/buttons.bootstrap.min.js' %>
+	<%= javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js' %>
+	<%= javascript_include_tag '//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js' %>
+	<%= javascript_include_tag '//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js' %>
+	<%= javascript_include_tag '//cdn.datatables.net/buttons/1.1.2/js/buttons.html5.min.js' %>
+	<%= javascript_include_tag '//cdn.datatables.net/buttons/1.1.2/js/buttons.print.min.js' %>
+	<%= javascript_include_tag '//cdn.datatables.net/buttons/1.1.2/js/buttons.colVis.min.js' %>
+	<%= javascript_include_tag '//cdn.datatables.net/plug-ins/1.10.11/sorting/natural.js' %>
+	<%= javascript_include_tag '//cdn.plot.ly/plotly-1.36.0.min.js' %>
+
+	<script>
+		var d3 = Plotly.d3;
+		gaTracker('UA-61688341-6');
+		if (<%= Rails.env == 'production' %>) {
+			gaTrack('<%= request.fullpath %>', 'HSCGP Portal');
+		}
+	</script>
+
+	<%= javascript_include_tag 'biocircos-1.1.1' %>
+
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<%= render '/layouts/nav' %>
+<%= render '/layouts/notices' %>
+<div class="container-fluid" id="wrap">
+	<div class="row section-pad" id="main-body">
+		<div class="col-md-12">
+			<%= yield %>
+      <div id="empty-modal-target"></div>
+		</div>
+	</div>
+</div>
+<div class="footer container-fluid">
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<%= link_to image_tag("broad-logo.png", class: "center-block img-responsive"), "http://www.broadinstitute.org" %>
+			<p class="text-muted">&copy; <%= Date.today.year %> The Broad Institute of MIT & Harvard</p>
+		</div>
+	</div>
+</div>
+</body>
+</html>

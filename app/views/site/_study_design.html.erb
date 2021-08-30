@@ -1,0 +1,104 @@
+<h1>Study Summary</h1>
+<div class="row">
+	<div class="col-md-6">
+                <h2 class="light">Overview</h2>
+                <p>
+                The data below summarises essential information from the 143 human pluripotent stem cell lines included in this study. 
+                The number of sequence variants shown below correspond to predicted missense or loss of function (LOF) variants.
+                Similarly, the number of structural variants refers to those large (&lt; 1 Mbp) and small (&gt;~ 1kbp) variants that overlap protein coding genes. Where these variants were not ascertained, N/A is returned. 
+                To search for details about variants of interest, please see “Primary Data Access” to apply for permission to access raw and analysed data. Once access has been granted, a searchable “Whole Genome” page will become visible.
+                Please see <a href="javascript:showSection('#tutorial-section');">Tutorial</a> to learn more about the functionality of this searchable resource.
+                Briefly, users can search across all cell lines for a particular gene or genetic variant, or within a cell line of interest
+                to ascertain all variants present in that line.
+                </p>
+                <p>
+                Note that for all cell lines obtained from University of California Los Angeles, we can only provide summary statistics on this page due to data use limitations.
+                For more information about these lines, <a href="javascript:showSection('#contact-section');">Contact Us</a>
+                </p>
+
+		<h2 class="light">Objectives</h2>
+		<ul>
+			<li>Use whole genome sequencing to map the genetic architecture of stem cell lines at the level of sequence and structural variants</li>
+			<li>Catalog inherited and acquired, rare and common variation in stem cell lines</li>
+			<li>Develop a framework for using genetic data to select cell lines for basic and clinical applications </li>
+		</ul>
+	</div>
+	<div class="col-md-6">
+		<div class="well well-lg text-center">
+                        <%= image_tag 'study_design.png', class: 'img-thumbnail' %>
+		</div>
+	</div>
+</div>
+
+<h2 class="light">Cell Lines</h2>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-striped" id="cell-lines" style="width: 100%;">
+			<thead>
+			<tr>
+				<th>Cell Line <span class="badge">Sample</span> </th>
+				<th>Institution</th>
+				<th>NIH Reg. #</th>
+				<th>Sex Chromosome Genotype</th>
+				<th>Mean Seq. Coverage</th>
+				<th>Median Seq. Coverage</th>
+				<th>Banked?</th>
+				<th>Sequence Variants</th>
+				<th>Structural Variants (all)</th>
+			</tr>
+			</thead>
+			<tfoot>
+			<tr>
+				<th>Cell Line </th>
+				<th>Institution</th>
+				<th>NIH Reg. #</th>
+				<th>Sex Chromosome Genotype</th>
+				<th>Mean Seq. Coverage</th>
+				<th>Median Seq. Coverage</th>
+				<th>Banked?</th>
+				<th>Sequence Variants</th>
+				<th>Structural Variants (all)</th>
+			</tr>
+			</tfoot>
+			<tbody>
+			<% @cells.each do |cell| %>
+				<tr>
+					<td><%= cell.name %> <span class="badge"><%= cell.sample_name %></span></td>
+					<td><%= cell.institution %></td>
+					<td><%= cell.nih_registration_number %></td>
+					<td><%= cell.sexgenotype %></td>
+					<td><%= cell.mean_seq_coverage %></td>
+					<td><%= cell.median_seq_coverage %></td>
+					<td><%= cell.banked %></td>
+					<td><%= cell.seq_results_count %></td>
+					<td><%= cell.cnv_results_count > 0 ? cell.cnv_results_count : "N/A" %></td>
+				</tr>
+			<% end %>
+			</tbody>
+		</table>
+		<%= render 'search_info' %>
+	</div>
+</div>
+<h3 class="light">Methods (Cell Banking and Analysis)</h3>
+
+<%= javascript_tag do %>
+
+	var cellTable = $('#cell-lines').DataTable({
+		"order": [[0, 'asc']],
+		language: {
+			search: "Filter All Results: "
+		},
+		autoWidth: true
+	});
+
+	// attach search fields and listener to perform column searching
+	appendSearchBoxes($('#cell-lines tfoot th'));
+
+	// perform search on data entry
+	enableSearchBoxes(cellTable);
+
+	$('#cell-lines_filter input').on('keyup change', function() {
+		regexSearch(this.value, cellTable);
+	});
+
+<% end %>

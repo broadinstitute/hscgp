@@ -1,0 +1,82 @@
+<div class="row">
+	<div class="col-md-12 index-section" id="about-section">
+		<%= render partial: 'about_content' %>
+	</div>
+	<div class="col-md-12 index-section" id="study-section">
+		<%= render partial: 'study_design' %>
+	</div>
+	<div class="col-md-12 index-section" id="tutorial-section">
+		<%= render partial: 'tutorial' %>
+	</div>
+	<div class="col-md-12 index-section" id="data-section">
+		<%= render partial: 'data_access' %>
+	</div>
+	<div class="col-md-offset-3 col-md-6 index-section" id="contact-section">
+		<%= render partial: 'contact_form' %>
+	</div>
+	<div class="col-md-offset-2 col-md-8 index-section" id="wgs-section">
+		<ul id="main-search-nav" class="nav nav-tabs" role="tablist">
+			<li role="presentation" id='basic-search-nav' class="active"><%= link_to "Basic Search <span class='fa fa-search'></span>".html_safe, '#basic-search', role: 'tab', 'data-toggle' => 'tab' %></li>
+			<!-- <li role="presentation" id='genotype-search-nav' ><%= link_to "Search by Genotype <span class='fa fa-flask'></span>".html_safe, '#genotype-search', role: 'tab', 'data-toggle' => 'tab' %></li> -->
+			<!-- <li role="presentation" id='precomputed-analysis-nav' ><%= link_to "View Precomputed Analysis <span class='fa fa-bar-chart'></span>".html_safe, '#precomputed-analyses', role: 'tab', 'data-toggle' => 'tab' %></li> -->
+			<li role="presentation" id="circos-tab-nav"><%= link_to "View CNV Regions <span class='fa fa-dot-circle-o'></span>".html_safe, '#cnv-plots', role: 'tab', 'data-toggle' => 'tab' %></li>
+		</ul>
+		<div id="search-tabs" class="tab-content">
+			<div id="basic-search" class="tab-pane active fade in">
+				<%= render partial: 'whole_genome_search' %>
+			</div>
+			<!-- <div id="genotype-search" class="tab-pane fade">
+				<%= render partial: 'genotype_search' %>
+			</div>
+			<div id="precomputed-analyses" class="tab-pane fade">
+				<%= render partial: 'select_precomputed_analysis' %>
+			</div> -->
+			<div id="cnv-plots" class="tab-pane fade">
+			</div>
+		</div>
+	</div>
+  <div class="col-md-offset-2 col-md-8 index-section" id="exome-section">
+    <%= render partial: 'exome_search' %>
+  </div>
+  <% if user_signed_in? && current_user.admin? %>
+    <div class="col-md-12 index-section" id="whitelist-section">
+      <%= render partial: 'whitelist_content' %>
+    </div>
+  <% end %>
+</div>
+<div id="search-target"></div>
+
+<script type="text/javascript">
+
+	if (<%= @contact_error %>) {
+		showSection('#contact-section');
+	}
+
+	$('.search-btn').click(function() {
+		var btnId = $(this).attr('id');
+		var basicFields = $('.required-basic');
+		var genotypeFields = $('.required-genotype');
+		if ( btnId == 'search-btn' && !validateSearch(basicFields)) {
+			alert("You must provide at least one cell line, gene, or variant.");
+			setErrorOnBlank(basicFields);
+			return false;
+		} else if (btnId == 'genotype-search-btn' && ( !validateSearch(genotypeFields) || $('#genotype_search_genotypes').val() == null) ) {
+			alert("You must select at least one genotype and provide at least one cell line or variant.");
+			setErrorOnBlank(genotypeFields);
+			return false;
+		} else {
+			launchSpinner();
+		}
+	});
+
+	$('#wgs-section').on('shown.bs.tab', function (e) {
+		$('#search-target').empty();
+	});
+
+	// don't render Circos until the tab is shown, otherwise it throws an error
+	$('#circos-tab-nav').on('shown.bs.tab', function() {
+		launchSpinner();
+		$.get("<%= view_circos_plots_path %>");
+	});
+
+</script>

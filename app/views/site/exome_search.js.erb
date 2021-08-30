@@ -1,0 +1,101 @@
+// render results table
+$('#search-target').html("<%= escape_javascript(render partial: 'exome_search_results') %>");
+
+// render tooltips
+$('[data-toggle="tooltip"]').tooltip();
+
+var exportTitle = 'HSCGP_data_export';
+// instantiate sequence variants DataTable
+var exomeTable = $('#exome-results').DataTable({
+	"order": [[1, 'asc'],[2, 'asc']],
+	"sorting": true,
+	"dom": "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>><'table-responsive results-pad't><'row'<'col-sm-6'i><'col-sm-6'p>>",
+	language: {
+		search: "Filter All Results: "
+	},
+	buttons: [
+		'copy',
+		{
+			extend: 'csvHtml5',
+			title: exportTitle
+		},
+		{
+			extend: 'excelHtml5',
+			title: exportTitle
+		},
+		'colvis'
+	],
+	columnDefs: [
+		{ type: 'natural', targets: 0 }
+	]
+});
+
+// attach search fields and listener to perform column searching
+appendSearchBoxes($('#exome-results tfoot th'));
+
+// perform search on data entry
+enableSearchBoxes(exomeTable);
+
+// overwrite main search method to support new searching
+$('#exome-results_filter input').on( 'keyup change', function () {
+		regexSearch(this.value, exomeTable);
+	}
+);
+
+// reattach tooltips on paging or redraw
+exomeTable.on('draw.dt', function() {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+
+$(document).ready(function() {
+
+	// load IGV results
+	var igvTarget = $("#igv-exome-target")[0],
+					igvOpts = {
+						showNavigation: true,
+						genome: "hg19",
+						showKaryo: true,
+						locus: "<%= @locus %>",
+						tracks: <%= raw @tracks.to_json %>
+					};
+	// create empty variable to check if we've already rendered IGV
+	var exomeIgvBrowser;
+
+	// don't render IGV until the tab is shown, otherwise it throws an error
+	$('#igv-exome-tab-nav').on('shown.bs.tab', function() {
+		if (exomeIgvBrowser == undefined) {
+      exomeIgvBrowser = igv.createBrowser(igvTarget, igvOpts);
+		}
+	});
+
+
+	// set a timer to renew the token when it expires
+	var interval = <%= Token.expires_in(session[:jwt_token], ENV['JWT_SECRET'])%>;
+	setTimeout(function() {
+		if (confirm('Your session has expired - please click OK to renew and reload your data')) {
+			launchSpinner();
+			var genes = <%= params[:exome_search][:genes].nil? ? raw(['']) : raw(params[:exome_search][:genes]) %>;
+			var cellLines = <%= params[:exome_search][:cell_lines].nil? ? raw(['']) : raw(params[:exome_search][:cell_lines]) %>;
+			if (genes.length == 0) {
+				genes.push("");
+			}
+			if (cellLines.length == 0) {
+				cellLines.push("");
+			}
+			$.post("<%= exome_search_path %>", {
+				'search': {
+					'genes': genes,
+					'cell_lines': cellLines,
+					'variants': "<%= params[:exome_search][:variants] %>"
+			}});
+		}
+	}, interval);
+
+	// stop spinner
+	$('body').data('spinner').stop();
+
+	// log traffic
+	if (<%= Rails.env == 'production' %>) {
+		gaTrack('<%= request.fullpath %>', 'HSCGP Portal (Exome Search)');
+	};
+});

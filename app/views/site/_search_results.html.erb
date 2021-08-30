@@ -1,0 +1,235 @@
+<hr />
+<ul class="nav nav-tabs" role="tablist">
+	<li role="presentation" class="active" id="seq-results-tab-nav"><%= link_to "Sequence Variant Results <span class='fa fa-search'></span>".html_safe, '#search-results-table', role: 'tab', 'data-toggle' => 'tab' %></li>
+	<li role="presentation" id="small-results-tab-nav"><%= link_to "Small CNV Results <span class='fa fa-search-minus'></span>".html_safe, '#small-cnv-search-results-table', role: 'tab', 'data-toggle' => 'tab' %></li>
+	<li role="presentation" id="large-results-tab-nav"><%= link_to "Large Structural Variant Results <span class='fa fa-search-plus'></span>".html_safe, '#large-cnv-search-results-table', role: 'tab', 'data-toggle' => 'tab' %></li>
+	<li role="presentation" id="summary-tab-nav"><%= link_to "Results Summary <span class='fa fa-bar-chart'></span>".html_safe, '#search-summary-plots', role: 'tab', 'data-toggle' => 'tab' %></li>
+	<li role="presentation" id="igv-tab-nav"><%= link_to "IGV <span class='fa fa-arrows-h'></span>".html_safe, '#igv-tab', role: 'tab', 'data-toggle' => 'tab' %></li>
+</ul>
+
+<div id="results-tabs" class="tab-content">
+	<div id="search-results-table" class="tab-pane pad active fade in">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-striped table-condensed" id="results">
+					<thead>
+					<tr>
+						<th>SNP ID</th>
+						<th>RSID</th>
+						<th>Chrom</th>
+						<th>Pos</th>
+						<th>Ref</th>
+						<th>Alt</th>
+						<th>Consequence</th>
+						<th>Symbol</th>
+						<th>Cell Line</th>
+						<th>Genotype</th>
+						<th>AC</th>
+						<th>AN</th>
+						<th>hESC AF</th>
+						<th>EXAC AF Adj</th>
+						<th>GnomAD AF</th>
+                                                <th>CADD</th>
+                                                <th>DANN</th>
+						<!--<th>ClinVar Hit</th>
+						<th>Sift</th>
+						<th>Polyphen</th>
+						<th>Singleton</th>
+						<th>Indel</th>
+						<th>In Exac</th>
+						<th>AC Adj</th>
+                                                <th>AN Adj</th>--> 
+					</tr>
+					</thead>
+					<tfoot>
+					<tr>
+						<th>SNP ID</th>
+						<th>RSID</th>
+						<th>Chrom</th>
+						<th>Pos</th>
+						<th>Ref</th>
+						<th>Alt</th>
+						<th>Consequence</th>
+						<th>Symbol</th>
+						<th>Cell Line</th>
+						<th>Genotype</th>
+						<th>AC</th>
+						<th>AN</th>
+						<th>hESC AF</th>
+						<th>EXAC AF Adj</th>
+						<th>GnomAD AF</th>
+                                                <th>CADD</th>
+                                                <th>DANN</th>
+						<!--<th>Clinvar Hit</th> <th>Sift</th> <th>Polyphen</th> <th>Singleton</th> <th>Indel</th> <th>In Exac</th> <th>AC Adj</th> <th>AN Adj</th>-->
+					</tr>
+					</tfoot>
+					<tbody>
+					<% @results.each do |result| %>
+						<tr>
+							<td><%= tooltip_truncate(result.snp_id) %></td>
+							<td><%= result.rsid %></td>
+							<td><%= result.chrom %></td>
+							<td><%= result.pos %></td>
+							<td><%= tooltip_truncate(result.ref) %></td>
+							<td><%= tooltip_truncate(result.alt) %></td>
+							<td><%= result.consequence %></td>
+							<td><%= result.symbol.join(', ') %></td>
+							<td><%= result.cell_id %></td>
+							<td><%= result.genotype %></td>
+							<td><%= result.ac %></td>
+							<td><%= result.an %></td>
+                                                        <td><%= (result.hesc_af    ) ? "%.3e" % (result.hesc_af    ) : "NA" %></td>
+							<td><%= (result.exac_af_adj) ? "%.3e" % (result.exac_af_adj) : "NA" %></td>
+							<td><%= (result.gnomad_af  ) ? "%.3e" % (result.gnomad_af  ) : "NA" %></td>
+							<td><%= (result.cadd       ) ? "%.3f" % (result.cadd       ) : "NA" %></td>
+							<td><%= (result.dann       ) ? "%.3f" % (result.dann       ) : "NA" %></td>
+						</tr>
+					<% end %>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<%= render 'search_info' %>
+	</div>
+	<div id="small-cnv-search-results-table" class="tab-pane pad fade">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-striped table-condensed" id="small-cnv-results">
+					<thead>
+					<tr>
+						<th>CNV ID</th>
+						<th>Chrom</th>
+						<th>Start</th>
+						<th>End</th>
+						<th>Size (kBP)</th>
+						<th>Category</th>
+						<th>Cell Line</th>
+						<th>Symbol</th>
+						<th>Genotype</th>
+						<th>Gene overlap</th>
+						<th>Gene start</th>
+						<th>Gene end</th>
+					</tr>
+					</thead>
+					<tfoot>
+					<tr>
+						<th>CNV ID</th>
+						<th>Chrom</th>
+						<th>Start</th>
+						<th>End</th>
+						<th>Size (kBP)</th>
+						<th>Category</th>
+						<th>Cell Line</th>
+						<th>Symbol</th>
+						<th>Genotype</th>
+						<th>Gene overlap</th>
+						<th>Gene start</th>
+						<th>Gene end</th>
+					</tr>
+					</tfoot>
+					<tbody>
+					<% @small_cnv.each do |result| %>
+						<tr>
+							<td><%= result.cnv_id %></td>
+							<td><%= result.chrom %></td>
+							<td><%= result.start %></td>
+							<td><%= result.end %></td>
+                                                        <td><%= "%.3f" % ((result.end - result.start) / 1e3) %></td>
+							<td><%= result.cn_category %></td>
+							<td><%= result.cell_id %></td>
+							<td><%= result.symbol %></td>
+							<td><%= result.genotype %></td>
+							<td><%= result.gene_overlap %></td>
+							<td><%= result.gene_start %></td>
+							<td><%= result.gene_end %></td>
+							<td><%= result.cn_dist %></td>
+							<td><%= result.gpc_ctrl_cn_dist %></td>
+						</tr>
+					<% end %>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<%= render 'search_info' %>
+	</div>
+	<div id="large-cnv-search-results-table" class="tab-pane pad fade">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-striped table-condensed" id="large-cnv-results">
+					<thead>
+					<tr>
+						<th>CNV ID</th>
+						<th>Chrom</th>
+						<th>Start</th>
+						<th>End</th>
+						<th>Size (kBP)</th>
+						<th>Category</th>
+						<th>Cell Line</th>
+						<th>Symbol</th>
+						<th>Gene overlap</th>
+						<th>Gene start</th>
+						<th>Gene end</th>
+					</tr>
+					</thead>
+					<tfoot>
+					<tr>
+						<th>CNV ID</th>
+						<th>Chrom</th>
+						<th>Start</th>
+						<th>End</th>
+						<th>Size (kBP)</th>
+						<th>Category</th>
+						<th>Cell Line</th>
+						<th>Symbol</th>
+						<th>Gene overlap</th>
+						<th>Gene start</th>
+						<th>Gene end</th>
+					</tr>
+					</tfoot>
+					<tbody>
+					<% @large_cnv.each do |result| %>
+						<tr>
+							<td><%= result.cnv_id %></td>
+							<td><%= result.chrom %></td>
+							<td><%= result.start %></td>
+							<td><%= result.end %></td>
+                                                        <td><%= "%.3f" % ((result.end - result.start) / 1e3) %></td>
+							<td><%= result.cn_category %></td>
+							<td><%= result.cell_id %></td>
+							<td><%= result.symbol %></td>
+							<td><%= result.gene_overlap %></td>
+							<td><%= result.gene_start %></td>
+							<td><%= result.gene_end %></td>
+						</tr>
+					<% end %>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<%= render 'search_info' %>
+	</div>
+	<div id="search-summary-plots" class="tab-pane pad fade">
+		<div class="row">
+			<div class="col-md-6" id="basic-wrapper">
+				<div id="basic-stats-chart"></div>
+			</div>
+			<div class="col-md-6" id="variant-wrapper">
+				<div id="variant-consequence-chart"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6" id="gene-wrapper">
+				<div id="seq-gene-distribution-chart"></div>
+			</div>
+			<div class="col-md-6" id="cnv-gene-wrapper">
+				<div id="cnv-gene-distribution-chart"></div>
+			</div>
+		</div>
+	</div>
+	<div id="igv-tab" class="tab-pane pad">
+		<div class="row">
+			<div class="col-md-12" id="igv-target">
+			</div>
+		</div>
+	</div>
+</div>

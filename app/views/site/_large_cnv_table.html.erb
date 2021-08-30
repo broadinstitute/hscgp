@@ -1,0 +1,32 @@
+<table class="table table-striped table-condensed large-cnv-table">
+  <thead>
+  <tr>
+    <th>Chrom</th>
+    <th>Start</th>
+    <th>End</th>
+    <th>Cell Line</th>
+    <th>Length</th>
+    <th>GSE Length</th>
+    <th>Copy Number</th>
+    <th>p-Value</th>
+    <th>Variant Type</th>
+    <th>Category</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% table_data.each do |region| %>
+    <tr>
+      <td><%= region.chrom %></td>
+      <td><%= region.start %></td>
+      <td><%= region.end %></td>
+      <td><%= region.cell_id %></td>
+      <td><%= region.length %></td>
+      <td><%= region.gse_length %></td>
+      <td><%= region.copy_number %></td>
+      <td><%= region.p_value %></td>
+      <td><%= region.variant_type %></td>
+      <td><%= region.category %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,18 @@
+
+<%= form_for(:genotype_search, url: genotype_search_path, html: { class: 'form', 'data-remote' => true }) do |f| %>
+	<h2>Search by Genotype <%= render partial: 'search_help' %> <%= f.submit 'Search', class: 'btn btn-success pull-right search-btn', id: 'genotype-search-btn', style: 'margin-top: 5px;' %></h2>
+	<div class="form-group">
+		<%= f.autocomplete_field :cell_lines, autocomplete_cell_line_sample_name_cell_lines_path, 'data-delimiter' => ' ', multiple: true, class: 'form-control required-genotype', placeholder: 'Search by cell line...', value: params[:whole_genome_search] ? params[:whole_genome_search][:cell_lines] : nil %>
+	</div>
+	<div class="form-group">
+		<%= f.text_field :variants, class: 'form-control required-genotype', placeholder: 'Search by variant...', value: params[:whole_genome_search] ? params[:whole_genome_search][:variants] : nil %>
+	</div>
+	<div class="form-group">
+		<%= f.label 'Disorder' %>
+		<%= f.select :phenotype, options_for_select(GenotypeVariant.phenotypes), {}, {class: 'form-control'} %>
+	</div>
+	<div class="form-group">
+		<%= f.label 'Genotype (select all that apply)' %>
+		<%= f.select :genotypes, options_for_select(%w(Alt Het Risk )), {}, {size: 3, multiple: true, class: 'form-control required-genotype'} %>
+	</div>
+<% end %>

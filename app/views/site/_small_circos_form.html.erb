@@ -1,0 +1,17 @@
+<%= form_for(:small_circos_region, url: view_small_circos_path, html: {class: 'form-inline', data: {remote: true}}) do |f| %>
+  <div class="form-group">
+    <%= f.label :chrom, "Chromosome" %>
+    <%= f.select :chrom, SiteController::CHROMOSOMES, {include_blank: true}, {class: 'form-control'} %>
+    <%= f.label :category, "Category" %>
+    <%= f.select :category, %w(Deletion Duplication Mixed), {include_blank: true}, {class: 'form-control'} %>
+    <%= f.submit 'Load Plot', class: 'btn btn-sm btn-success', id: 'load-sm-region' %>
+   </div>
+<% end %>
+
+<script type="text/javascript">
+
+  $('#load-sm-region').click(function() {
+    launchSpinner();
+  });
+
+</script>

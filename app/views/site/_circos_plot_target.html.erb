@@ -1,0 +1,100 @@
+<br />
+<div class="row">
+  <div class="col-md-offset-2 col-md-8">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active circos-tab-nav" id="lg-deletions-tab-nav"><%= link_to "Large CNV Deletions".html_safe, '#lg-deletions', role: 'tab', 'data-toggle' => 'tab' %></li>
+      <li role="presentation" class="circos-tab-nav" id="lg-duplications-tab-nav"><%= link_to "Large CNV Duplications".html_safe, '#lg-duplications', role: 'tab', 'data-toggle' => 'tab' %></li>
+      <li role="presentation" class="circos-tab-nav" id="lg-loh-tab-nav"><%= link_to "Large CNV CNN LOH".html_safe, '#lg-loh', role: 'tab', 'data-toggle' => 'tab' %></li>
+      <li role="presentation" class="circos-tab-nav" id="sm-regions-tab-nav"><%= link_to "Small CNV Regions (by chromosome)".html_safe, '#sm-regions', role: 'tab', 'data-toggle' => 'tab' %></li>
+    </ul>
+  </div>
+</div>
+
+<div id="circos-results-tabs" class="tab-content">
+	<div id="lg-deletions" class="tab-pane pad active fade in">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active" id="lg-deletion-circos-nav"><%= link_to "Circos Plot".html_safe, '#lg-deletion-circos', role: 'tab', 'data-toggle' => 'tab' %></li>
+      <li role="presentation" id="lg-region-table-nav"><%= link_to "Raw Results".html_safe, '#lg-deletion-table', role: 'tab', 'data-toggle' => 'tab' %></li>
+    </ul>
+    <div id="lg-deletions-results-tabs" class="tab-content">
+      <div id="lg-deletion-circos" class="tab-pane pad active fade in">
+        <div class="row">
+          <div class="col-md-offset-2 col-md-8">
+            <div id="lg-deletions-biocircos" class="text-center">
+              <h3>Large CNV Deletions</h3>
+            </div>
+          </div>
+          <%= render 'circos_legend' %>
+        </div>
+      </div>
+      <div id="lg-deletion-table" class="tab-pane pad fade">
+        <div class="row">
+          <div class="col-md-12">
+            <%= render partial: 'large_cnv_table', locals: {table_data: @lg_deletions_table} %>
+          </div>
+        </div>
+      </div>
+    </div>
+	</div>
+	<div id="lg-duplications" class="tab-pane pad fade">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active" id="lg-duplication-circos-nav"><%= link_to "Circos Plot".html_safe, '#lg-duplication-circos', role: 'tab', 'data-toggle' => 'tab' %></li>
+      <li role="presentation" id="lg-duplication-table-nav"><%= link_to "Raw Results".html_safe, '#lg-duplication-table', role: 'tab', 'data-toggle' => 'tab' %></li>
+    </ul>
+    <div id="lg-duplications-results-tabs" class="tab-content">
+      <div id="lg-duplication-circos" class="tab-pane pad active fade in">
+        <div class="row">
+          <div class="col-md-offset-2 col-md-8">
+            <div id="lg-duplications-biocircos" class="text-center">
+              <h3>Large CNV Duplications</h3>
+            </div>
+          </div>
+          <%= render 'circos_legend' %>
+        </div>
+      </div>
+      <div id="lg-duplication-table" class="tab-pane pad fade">
+        <div class="row">
+          <div class="col-md-12">
+            <%= render partial: 'large_cnv_table', locals: {table_data: @lg_duplications_table} %>
+          </div>
+        </div>
+      </div>
+    </div>
+	</div>
+	<div id="lg-loh" class="tab-pane pad fade">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active" id="lg-loh-circos-nav"><%= link_to "Circos Plot".html_safe, '#lg-loh-circos', role: 'tab', 'data-toggle' => 'tab' %></li>
+      <li role="presentation" id="lg-loh-table-nav"><%= link_to "Raw Results".html_safe, '#lg-loh-table', role: 'tab', 'data-toggle' => 'tab' %></li>
+    </ul>
+    <div id="lg-loh-results-tabs" class="tab-content">
+      <div id="lg-loh-circos" class="tab-pane pad active fade in">
+        <div class="row">
+          <div class="col-md-offset-2 col-md-8">
+            <div id="lg-loh-biocircos" class="text-center">
+              <h3>Large CNV Duplications</h3>
+            </div>
+          </div>
+          <%= render 'circos_legend' %>
+        </div>
+      </div>
+      <div id="lg-loh-table" class="tab-pane pad fade">
+        <div class="row">
+          <div class="col-md-12">
+            <%= render partial: 'large_cnv_table', locals: {table_data: @lg_loh_table} %>
+          </div>
+        </div>
+      </div>
+    </div>
+	</div>
+	<div id="sm-regions" class="tab-pane pad fade">
+		<div class="row">
+			<div class="col-md-offset-1 col-md-10">
+				<div class="text-center">
+					<h3>Small CNV Regions By Chromosome</h3>
+          <%= render 'small_circos_form' %>
+				</div>
+			</div>
+		</div>
+    <div id="sm-results-target"></div>
+	</div>
+</div>

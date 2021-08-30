@@ -1,0 +1,146 @@
+// replace search area with blank circos target
+$('#search-target').html("<%= escape_javascript(render partial: 'circos_plot_target') %>");
+
+// load large HISTOGRAM deletions
+var HISTOGRAM_LG_DELETIONS_FIXED  = [ "HISTOGRAM_DELETIONS_FIXED" , {
+	maxRadius: 240,
+	minRadius: 200,
+	histogramFillColor: "#FF0000"
+} ,
+	<%= raw @lg_deletions_fixed.to_json %>
+];
+
+var HISTOGRAM_LG_DELETIONS_MOSAIC  = [ "HISTOGRAM_DELETIONS_MOSAIC" , {
+	maxRadius: 190,
+	minRadius: 150,
+	histogramFillColor: "#0000FF"
+} ,
+	<%= raw @lg_deletions_mosaic.to_json %>
+];
+
+
+// render plot
+BioCircos01 = new BioCircos(BACKGROUND_LG_HISTOGRAM_FIXED, HISTOGRAM_LG_DELETIONS_FIXED, BACKGROUND_LG_HISTOGRAM_MOSAIC, HISTOGRAM_LG_DELETIONS_MOSAIC, BioCircosGenome, {
+	target : "lg-deletions-biocircos",
+	svgWidth : 600,
+	svgHeight : 600,
+	chrPad : 0.04,
+	innerRadius: 246,
+	outerRadius: 270,
+	HISTOGRAMMouseOverDisplay : true,
+	HISTOGRAMMouseOverColor : "yellow",
+	HISTOGRAMMouseOverTooltipsHtml01 : "Chr : ",
+	HISTOGRAMMouseOverTooltipsHtml02 : "<br>Start : ",
+	HISTOGRAMMouseOverTooltipsHtml03 : "<br>End : ",
+	HISTOGRAMMouseOverTooltipsHtml04 : "<br>Identifier : ",
+	HISTOGRAMMouseOverTooltipsHtml05 : "<br>Value : ",
+	HISTOGRAMMouseOutDisplay : true,
+	HISTOGRAMMouseOutColor : "none",
+	HISTOGRAMMouseOverTooltipsPosition : "absolute",
+	HISTOGRAMMouseOverTooltipsBackgroundColor : "white",
+	HISTOGRAMMouseOverTooltipsBorderStyle : "solid",
+	HISTOGRAMMouseOverTooltipsBorderWidth : 1,
+	HISTOGRAMMouseOverTooltipsPadding : "3px",
+	HISTOGRAMMouseOverTooltipsBorderRadius : "3px",
+	HISTOGRAMMouseOverTooltipsOpacity : 0.8
+});
+
+BioCircos01.draw_genome(BioCircos01.genomeLength);
+
+// load large HISTOGRAM duplications
+var HISTOGRAM_LG_DUPLICATIONS_FIXED  = [ "HISTOGRAM_LG_DUPLICATIONS_FIXED" , {
+	maxRadius: 240,
+	minRadius: 200,
+	histogramFillColor: "#FF0000"
+} ,
+	<%= raw @lg_duplications_fixed.to_json %>
+];
+
+var HISTOGRAM_LG_DELETIONS_MOSAIC  = [ "HISTOGRAM_LG_DELETIONS_MOSAIC" , {
+	maxRadius: 190,
+	minRadius: 150,
+	histogramFillColor: "#0000FF"
+} ,
+	<%= raw @lg_duplications_mosaic.to_json %>
+];
+
+
+// render plot
+BioCircos02 = new BioCircos(BACKGROUND_LG_HISTOGRAM_FIXED, HISTOGRAM_LG_DUPLICATIONS_FIXED, BACKGROUND_LG_HISTOGRAM_MOSAIC, HISTOGRAM_LG_DELETIONS_MOSAIC, BioCircosGenome, {
+	target : "lg-duplications-biocircos",
+	svgWidth : 600,
+	svgHeight : 600,
+	chrPad : 0.04,
+	innerRadius: 246,
+	outerRadius: 270,
+	HISTOGRAMMouseOverDisplay : true,
+	HISTOGRAMMouseOverTooltipsHtml01 : "Chr : ",
+	HISTOGRAMMouseOverTooltipsHtml02 : "<br>Start : ",
+	HISTOGRAMMouseOverTooltipsHtml03 : "<br>End : ",
+	HISTOGRAMMouseOverTooltipsHtml04 : "<br>Identifier : ",
+	HISTOGRAMMouseOverTooltipsHtml05 : "<br>Value : ",
+	HISTOGRAMMouseOutDisplay : true,
+	HISTOGRAMMouseOutColor : "none",
+	HISTOGRAMMouseOverTooltipsPosition : "absolute",
+	HISTOGRAMMouseOverTooltipsBackgroundColor : "white",
+	HISTOGRAMMouseOverTooltipsBorderStyle : "solid",
+	HISTOGRAMMouseOverTooltipsBorderWidth : 1,
+	HISTOGRAMMouseOverTooltipsPadding : "3px",
+	HISTOGRAMMouseOverTooltipsBorderRadius : "3px",
+	HISTOGRAMMouseOverTooltipsOpacity : 0.8
+});
+
+BioCircos02.draw_genome(BioCircos02.genomeLength);
+
+// load large HISTOGRAM CNN-LOH
+var HISTOGRAM_LG_CNN_LOH  = [ "HISTOGRAM_LG_CNN_LOH" , {
+	maxRadius: 240,
+	minRadius: 180,
+	histogramFillColor: "#0000FF"
+} ,
+	<%= raw @lg_loh.to_json %>
+];
+
+
+// render plot
+BioCircos03 = new BioCircos(BACKGROUND01, HISTOGRAM_LG_CNN_LOH, BioCircosGenome, {
+	target : "lg-loh-biocircos",
+	svgWidth : 600,
+	svgHeight : 600,
+	chrPad : 0.04,
+	innerRadius: 246,
+	outerRadius: 270,
+	HISTOGRAMMouseOverDisplay : true,
+	HISTOGRAMMouseOverTooltipsHtml01 : "Chr : ",
+	HISTOGRAMMouseOverTooltipsHtml02 : "<br>Start : ",
+	HISTOGRAMMouseOverTooltipsHtml03 : "<br>End : ",
+	HISTOGRAMMouseOverTooltipsHtml04 : "<br>Identifier : ",
+	HISTOGRAMMouseOverTooltipsHtml05 : "<br>Value : ",
+	HISTOGRAMMouseOutDisplay : true,
+	HISTOGRAMMouseOutColor : "none",
+	HISTOGRAMMouseOverTooltipsPosition : "absolute",
+	HISTOGRAMMouseOverTooltipsBackgroundColor : "white",
+	HISTOGRAMMouseOverTooltipsBorderStyle : "solid",
+	HISTOGRAMMouseOverTooltipsBorderWidth : 1,
+	HISTOGRAMMouseOverTooltipsPadding : "3px",
+	HISTOGRAMMouseOverTooltipsBorderRadius : "3px",
+	HISTOGRAMMouseOverTooltipsOpacity : 0.8
+});
+
+BioCircos03.draw_genome(BioCircos03.genomeLength);
+
+// load all datatables
+$('.large-cnv-table').DataTable({
+  "order": [[0, 'asc'],[1, 'asc']],
+  "sorting": true,
+  "dom": "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>><'table-responsive results-pad't><'row'<'col-sm-6'i><'col-sm-6'p>>",
+  language: {
+    search: "Filter All Results: "
+  },
+  buttons: [
+    'copy', 'csv', 'excel'
+  ]
+});
+
+// stop the spinner
+stopSpinner();

@@ -1,0 +1,41 @@
+<h1>Contact Us</h1>
+<p class="lead text-muted">Use the form below to send a message to the Human Stem Cell Genome Project team.</p>
+<%= form_for @help_request, url: help_request_path, html: {class: "form", role: "form"} do |f| %>
+	<% if @help_request.errors.any? %>
+		<div class="bs-callout bs-callout-danger">
+			<h4><%= pluralize(@help_request.errors.count, "error") %> prohibited this message from being delivered:</h4>
+
+			<ul>
+				<% @help_request.errors.full_messages.each do |message| %>
+					<li><%= message %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<div class="form-group row">
+		<div class="<%= !@help_request.errors[:email].empty? ? 'has-error has-feedback ' : nil %>col-md-4">
+			<%= f.label :email, "Reply Email" %><br />
+			<%= f.email_field :email, class: "form-control" %>
+		</div>
+		<div class="<%= !@help_request.errors[:subject].empty? ? 'has-error has-feedback ' : nil %>col-md-8">
+			<%= f.label :subject %><br />
+			<%= f.text_field :subject, class: "form-control" %>
+		</div>
+	</div>
+	<div class="<%= !@help_request.errors[:content].empty? ? 'has-error has-feedback ' : nil %>form-group">
+		<%= f.text_area :content, class: "form-control", rows: 8 %>
+	</div>
+	<div class="form-group row">
+		<div class="col-md-6">
+			<%= f.label :attachment %><br />
+			<%= f.file_field :attachment %>
+		</div>
+		<div class="col-md-6">
+          <%= yield :recaptcha_js %>
+		</div>
+	</div>
+
+	<div class="form-group">
+      <%= f.submit "Send Message", class: "btn btn-success btn-lg" %>
+	</div>
+<% end %>

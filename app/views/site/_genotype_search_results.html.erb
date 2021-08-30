@@ -1,0 +1,54 @@
+<ul class="nav nav-tabs" role="tablist">
+	<li role="presentation" class="active" id="gen-results-tab-nav"><%= link_to "Search Results <span class='fa fa-search'></span>".html_safe, '#search-results-table', role: 'tab', 'data-toggle' => 'tab' %></li>
+	<li role="presentation" id="gen-summary-tab-nav"><%= link_to "Results Summary <span class='fa fa-bar-chart'></span>".html_safe, '#search-genotype-plots', role: 'tab', 'data-toggle' => 'tab' %></li>
+	<li role="presentation" id="circos-tab-nav"><%= link_to "Circos Plot <span class='fa fa-dot-circle-o'></span>".html_safe, '#circos-plot', role: 'tab', 'data-toggle' => 'tab' %></li>
+</ul>
+
+<div id="tabs" class="tab-content">
+	<div id="search-results-table" class="tab-pane pad active fade in">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-striped table-condensed" id="results">
+					<thead>
+					<tr>
+						<th>Variant (chr:pos)</th>
+						<th>Cell Line</th>
+						<th>Genotype</th>
+					</tr>
+					</thead>
+					<tfoot>
+					<tr>
+						<th>Variant</th>
+						<th>Cell Line</th>
+						<th>Genotype</th>
+					</tr>
+					</tfoot>
+					<tbody>
+					<% @results.each do |result| %>
+						<tr>
+							<td><%= result.variant %></td>
+							<td><%= result.cell_id %></td>
+							<td><%= result.genotype %></td>
+						</tr>
+					<% end %>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="search-genotype-plots" class="tab-pane pad fade">
+		<div class="row">
+			<div class="col-md-12" id="genotype-wrapper">
+				<div id="basic-stats-chart"></div>
+			</div>
+		</div>
+	</div>
+	<div id="circos-plot" class="tab-pane pad fade">
+		<div class="row">
+			<div class="col-md-12">
+				<div id="biocircos" class="text-center">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,233 @@
+// render results table
+$('#search-target').html("<%= escape_javascript(render partial: 'search_results') %>");
+
+// render tooltips
+$('[data-toggle="tooltip"]').tooltip();
+
+var exportTitle = 'HSCGP_data_export';
+// instantiate sequence variants DataTable
+var table = $('#results').DataTable({
+	"order": [[1, 'asc'],[2, 'asc']],
+	"sorting": true,
+	"dom": "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>><'table-responsive results-pad't><'row'<'col-sm-6'i><'col-sm-6'p>>",
+	language: {
+		search: "Filter All Results: "
+	},
+	buttons: [
+		'copy',
+		{
+			extend: 'csvHtml5',
+			title: exportTitle
+		},
+		{
+			extend: 'excelHtml5',
+			title: exportTitle
+		},
+		'colvis'
+	],
+	columnDefs: [
+		{ type: 'natural', targets: 0 }
+	]
+});
+
+// attach search fields and listener to perform column searching
+appendSearchBoxes($('#results tfoot th'));
+
+// perform search on data entry
+enableSearchBoxes(table);
+
+// overwrite main search method to support new searching
+$('#results_filter input').on( 'keyup change', function () {
+		regexSearch(this.value, table);
+	}
+);
+
+// reattach tooltips on paging or redraw
+table.on('draw.dt', function() {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+
+// instantiate small structural variants DataTable
+var smallCnvTable = $('#small-cnv-results').DataTable({
+	"order": [[1, 'asc'],[2, 'asc']],
+	"sorting": true,
+	"dom": "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>><'table-responsive results-pad't><'row'<'col-sm-6'i><'col-sm-6'p>>",
+	language: {
+		search: "Filter All Results: "
+	},
+	buttons: [
+		'copy', 'csv', 'excel', 'colvis'
+	],
+	columnDefs: [
+		{ type: 'natural', targets: 0 }
+	]
+});
+
+// attach search fields and listener to perform column searching
+appendSearchBoxes($('#small-cnv-results tfoot th'));
+
+// perform search on data entry
+enableSearchBoxes(smallCnvTable);
+// overwrite main search method to support new searching
+$('#small-cnv-results_filter input').on( 'keyup change', function () {
+		regexSearch(this.value, smallCnvTable);
+	}
+);
+
+// reattach tooltips on paging or redraw
+smallCnvTable.on('draw.dt', function() {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+
+// instantiate large structural variants DataTable
+var largeCnvTable = $('#large-cnv-results').DataTable({
+	"order": [[1, 'asc'],[2, 'asc']],
+	"sorting": true,
+	"dom": "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>><'table-responsive results-pad't><'row'<'col-sm-6'i><'col-sm-6'p>>",
+	language: {
+		search: "Filter All Results: "
+	},
+	buttons: [
+		'copy', 'csv', 'excel', 'colvis'
+	],
+	columnDefs: [
+		{ type: 'natural', targets: 0 }
+	]
+});
+
+
+// attach search fields and listener to perform column searching
+appendSearchBoxes($('#large-cnv-results tfoot th'));
+
+// perform search on data entry
+enableSearchBoxes(largeCnvTable);
+
+// overwrite main search method to support new searching
+$('#large-cnv-results_filter input').on( 'keyup change', function () {
+					regexSearch(this.value, largeCnvTable);
+				}
+);
+
+// reattach tooltips on paging or redraw
+largeCnvTable.on('draw.dt', function() {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+
+$(document).ready(function() {
+
+	// check to see if columns have switched to responsive layout
+	var halfSize = ($('#search-target').width() / 2 ) - 30;
+	var fullSize = $('#search-target').width() - 30;
+	var mode = $('body').width() < 977;
+
+	// layouts
+	var basicLayout = {
+		title: 'Sequence Variant Summary Statistics',
+		font: plotlyLabelFont,
+		width: mode ? fullSize : halfSize
+	};
+
+	var variantLayout = {
+		title: 'Sequence Variant Consequence Distribution',
+		font: plotlyLabelFont,
+		width: mode ? fullSize : halfSize
+	};
+
+	var seqGeneLayout = {
+		title: 'Sequence Variant Gene Distribution (Top 100, Sorted by Count & Symbol)',
+		font: plotlySmallLabelFont,
+		width: mode ? fullSize : halfSize
+	};
+
+	var cnvGeneLayout = {
+		title: 'Structural Variant Gene Distribution (Top 100, Sorted by Count & Symbol)',
+		font: plotlySmallLabelFont,
+		width: mode ? fullSize : halfSize
+	};
+
+        
+	// assign colors
+	var booleanData = <%= raw @boolean_data.to_json %>;
+	$(booleanData).each(function(i) {
+		this.marker = {color: colorbrewer.Set1[5][i]};
+	});
+
+	var variantData = <%= raw @consequence_data.to_json %>;
+	$(variantData).each(function(i) {
+		this.marker = {color: colorbrewer.Set1[<%= @consequence_data.size < 3 ? 3 : @consequence_data.size %>][i]};
+	});
+
+	// render summary plots
+	Plotly.newPlot('basic-stats-chart', booleanData, basicLayout);
+	Plotly.newPlot('variant-consequence-chart', variantData, variantLayout);
+	Plotly.newPlot('seq-gene-distribution-chart', <%= raw @seq_gene_distribution.to_json %>, seqGeneLayout);
+	Plotly.newPlot('cnv-gene-distribution-chart', <%= raw @cnv_gene_distribution.to_json %>, cnvGeneLayout);
+
+	// resize on window drag end
+	$(window).on('resizeEnd', function() {
+		var halfUpdate = {width: ($('#search-target').width() / 2 ) - 30 };
+		var fullUpdate = {width: $('#search-target').width() - 30 };
+		var updateMode = $('body').width() < 977;
+
+		// check to see if columns have switched to responsive layout
+		Plotly.relayout('basic-stats-chart', updateMode ? fullUpdate : halfUpdate);
+		Plotly.relayout('variant-consequence-chart', updateMode ? fullUpdate : halfUpdate);
+		Plotly.relayout('seq-gene-distribution-chart', updateMode ? fullUpdate : halfUpdate);
+		Plotly.relayout('cnv-gene-distribution-chart', updateMode ? fullUpdate : halfUpdate);
+
+	});
+
+	// load IGV results
+	var igvTarget = document.getElementById('igv-target');
+	var igvOpts = {
+            showNavigation: true,
+            showRuler: true,
+            reference: {
+                id: 'hg19'
+            },
+            genome: "hg19",
+            showKaryo: true,
+            locus: "<%= @locus %>",
+            tracks: <%= raw @tracks.to_json %>
+        };
+	// create empty variable to check if we've already rendered IGV
+	var igvBrowser;
+
+	// don't render IGV until the tab is shown, otherwise it throws an error
+	$('#igv-tab-nav').on('shown.bs.tab', function() {
+		if (igvBrowser == undefined) {
+			igvBrowser = igv.createBrowser(igvTarget, igvOpts);
+		}
+	});
+
+
+	// set a timer to renew the token when it expires
+	var interval = <%= Token.expires_in(session[:jwt_token], ENV['JWT_SECRET'])%>;
+	setTimeout(function() {
+		if (confirm('Your session has expired - please click OK to renew and reload your data')) {
+			launchSpinner();
+			var genes = <%= params[:whole_genome_search][:genes].nil? ? raw(['']) : raw(params[:whole_genome_search][:genes]) %>;
+			var cellLines = <%= params[:whole_genome_search][:cell_lines].nil? ? raw(['']) : raw(params[:whole_genome_search][:cell_lines]) %>;
+			if (genes.length == 0) {
+				genes.push("");
+			}
+			if (cellLines.length == 0) {
+				cellLines.push("");
+			}
+			$.post("<%= whole_genome_search_path %>", {
+				'search': {
+					'genes': genes,
+					'cell_lines': cellLines,
+					'variants': "<%= params[:whole_genome_search][:variants] %>"
+                                }}) 
+		}
+	}, interval);
+
+	// stop spinner
+	$('body').data('spinner').stop();
+
+	// log traffic
+	if (<%= Rails.env == 'production' %>) {
+		gaTrack('<%= request.fullpath %>', 'HSCGP Portal (Whole Genome Search)');
+	};
+});

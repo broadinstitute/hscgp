@@ -1,0 +1,26 @@
+
+<%= form_for(:whole_genome_search, url: whole_genome_search_path, html: { class: 'form', 'data-remote' => true }) do |f| %>
+	<h2>Whole Genome Search <%= render partial: 'search_help' %> <%= f.submit 'Search', class: 'btn btn-success pull-right search-btn', id: 'search-wgs-btn', style: 'margin-top: 5px;' %></h2>
+	<div class="form-group">
+		<%= f.autocomplete_field :cell_lines, autocomplete_cell_line_sample_name_cell_lines_path, 'data-delimiter' => ' ', multiple: true, class: 'form-control required-basic', placeholder: 'Search by cell line...', value: params[:whole_genome_search] ? params[:whole_genome_search][:cell_lines] : nil %>
+	</div>
+	<div class="form-group">
+		<%= f.autocomplete_field :genes, autocomplete_gene_symbol_genes_path, 'data-delimiter' => ' ', multiple: true, class: 'form-control required-basic', placeholder: 'Search by gene...', value: params[:whole_genome_search] ? params[:whole_genome_search][:@seq_gene_distribution] : nil %>
+	</div>
+	<div class="form-group">
+		<%= f.text_field :variants, class: 'form-control required-basic', placeholder: 'Search by variant...', value: params[:whole_genome_search] ? params[:whole_genome_search][:variants] : nil %>
+	</div>
+        <div>
+          <p>
+          Sequence variants and large structural variants were ascertained across all 143 cell lines in this study, but variants from the 18 UCLA lines cannot be shown due to data sharing regulations.
+          Small CNVs were ascertained for 121 of the remaining lines that had low intrinsic variability in sequencing depth.
+          Sequence variants shown are those predicted to be missense or loss-of-function mutations in protein coding genes. 
+          Data can be sorted by allele frequency (AF) or predicted deleterious effect (CADD or DANN score).
+          Small CNVs (approximately 1kbp to 1Mbp) and large structural variants (&gt;1Mbp) shown are those that overlap with gene bodies.
+          If more than one gene is affected, the same CNV may be listed on multiple rows.
+          Multiple adjacent CNV calls within the same line likely reflect fragmented calls from a single event and should be manually confirmed by the user.
+          Calls are classified as Deletion, Duplication, or CN-LOH based on their copy number, or Mixed when calls are compl]ex.
+          Large structural variants were called and classified by depth of coverage analysis and/or b allele frequency analysis from WGS data, MoChA analysis of microarray data, or a combination of these three methods. 
+          </p>
+        </div>
+<% end %>

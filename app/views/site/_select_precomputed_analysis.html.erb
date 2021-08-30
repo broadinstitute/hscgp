@@ -1,0 +1,7 @@
+
+<%= form_for(:precomputed_analysis, url: view_precomputed_analysis_path, html: { class: 'form', 'data-remote' => true, method: :post }) do |f| %>
+	<h2>View Precomputed Analysis Results <%= f.submit 'View', class: 'btn btn-info pull-right search-btn', id: 'view-precomputed', style: 'margin-top: 5px;' %></h2>
+	<div class="form-group">
+		<%= f.select :id, options_for_select(PrecomputedHeatmap.create_select_options), {}, {class: 'form-control'} %>
+	</div>
+<% end %>

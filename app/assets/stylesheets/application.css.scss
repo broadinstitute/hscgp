@@ -1,0 +1,231 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require jquery-ui/core
+ *= require jquery-ui/dialog
+ *= require jquery-ui/menu
+ *= require jquery-ui/autocomplete
+ *= require_self
+ */
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "bootstrap/theme";
+
+/* additional styles */
+
+html, body {
+  height: 100%;
+}
+
+#main-body {
+  padding-bottom: 155px;
+}
+
+#wrap {
+  min-height: 100%;
+}
+
+
+.section-pad {
+  margin-top: 60px;
+  margin-bottom: 20px;
+}
+
+.pad {
+  padding: 20px 0;
+}
+
+.light {
+  font-weight: 200;
+}
+
+.index-section {
+  display: none;
+}
+
+.jumbotron {
+  background-color: transparent;
+  margin-top: 10px;
+}
+
+.main-banner {
+  border: 1px solid #777777;
+  background: linear-gradient(#eee, #aaa);
+  text-align: center;
+}
+
+.banner-img {
+  position: relative;
+  top: -20px;
+}
+
+#about-section, #new-user-session {
+  display: block;
+}
+
+.bs-callout{
+  margin:20px 0;
+  padding:20px 15px 15px 20px;
+  border-left:3px solid #eee
+}
+
+.bs-callout p:last-child{
+  margin-bottom:0;
+}
+
+.bs-callout code{
+  background-color:#fff;
+  border-radius:3px
+}
+
+.bs-callout h4 {
+  font-weight: bold;
+  margin-top:0;
+  margin-bottom:5px
+}
+
+.bs-callout ul{
+  padding-left: 20px;
+  color: inherit;
+}
+
+.bs-callout-danger{
+  background-color:#fdf7f7;
+  border-left: 5px solid #d9534f;
+  color: #d9534f
+}
+
+.bs-callout-danger ul{
+  color: #d9534f;
+}
+
+.bs-callout-warning{
+  background-color:#fcf8f2;
+  border-left: 5px solid #f0ad4e;
+  color: #f0ad4e
+}
+
+.bs-callout-warning ul{
+  color: #f0ad4e;
+}
+
+.bs-callout-info{
+  background-color:#f4f8fa;
+  border-left: 5px solid #5bc0de;
+  color: #5bc0de
+}
+
+.bs-callout-info ul{
+  color: #5bc0de;
+}
+
+.bs-callout-default {
+  background-color: #f0f0f0;
+  border-left: 5px solid #777;
+  color: #777
+}
+
+.bs-callout-default ul{
+  color: #777;
+}
+
+.bs-callout-primary {
+  background-color: lighten(#428bca, 40%);
+  border-left: 5px solid #428bca;
+  color: #428bca
+}
+
+.bs-callout-primary ul{
+  color: #428bca;
+}
+
+.bs-callout-success {
+  background-color: lighten(#5cb85c, 40%);
+  border-left: 5px solid #5cb85c;
+  color: #5cb85c
+}
+
+.bs-callout-success ul{
+  color: #5cb85c;
+}
+
+.actions {
+  white-space: nowrap;
+}
+
+.ui-widget-content, .ui-widget-header, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button, p, li {
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 16px;
+}
+
+#spinner_target {
+  min-height: 80px;
+  position: relative;
+  margin: 20px 0;
+}
+
+.top-pad {
+  margin-top: 10px;
+}
+
+.table-responsive {
+  margin: 0;
+  table {
+    min-width: 100%;
+  }
+}
+
+.results-pad {
+  margin: 10px 0;
+}
+
+.dataTable thead tr th {
+  white-space: nowrap;
+}
+
+.footer {
+  background-color: #efefef;
+  padding-top: 25px;
+  border-top: 3px solid #ddd;
+  position: relative;
+  margin-top: -155px; /* negative value of footer height */
+  height: 155px;
+  clear:both;
+  width: 100%;
+}
+
+.footer img {
+  margin-bottom: 10px;
+}
+
+.footer a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.tooltip-inner {
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.popover {
+  max-width: 100%;
+}
+
+.navigation-form {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+/* Media Queries */

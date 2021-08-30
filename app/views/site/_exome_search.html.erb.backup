@@ -1,0 +1,13 @@
+
+<%= form_for(:exome_search, url: exome_search_path, html: { class: 'form', 'data-remote' => true }) do |f| %>
+  <h2>Exome Search <%= render partial: 'search_help' %> <%= f.submit 'Search', class: 'btn btn-success pull-right search-btn', id: 'search-exome-btn', style: 'margin-top: 5px;' %></h2>
+  <div class="form-group">
+    <%= f.autocomplete_field :cell_lines, autocomplete_exome_cell_line_bam_sample_name_exome_cell_lines_path, 'data-delimiter' => ' ', multiple: true, class: 'form-control required-basic', placeholder: 'Search by cell line...', value: params[:exome_search] ? params[:exome_search][:cell_lines] : nil %>
+  </div>
+  <div class="form-group">
+    <%= f.autocomplete_field :genes, autocomplete_gene_symbol_genes_path, 'data-delimiter' => ' ', multiple: true, class: 'form-control required-basic', placeholder: 'Search by gene...', value: params[:whole_genome_search] ? params[:whole_genome_search][:@seq_gene_distribution] : nil %>
+  </div>
+  <div class="form-group">
+    <%= f.text_field :variants, class: 'form-control required-basic', placeholder: 'Search by variant...', value: params[:whole_genome_search] ? params[:whole_genome_search][:variants] : nil %>
+  </div>
+<% end %>

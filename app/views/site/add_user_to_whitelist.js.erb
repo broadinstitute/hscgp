@@ -1,0 +1,11 @@
+$('#empty-modal-target').html("<%= escape_javascript(render partial: '/layouts/empty_modal') %>");
+
+if ( <%= @user_whitelist.errors.any? %>) {
+    $('#empty-modal-alert').html('The following errors prevented saving the new whitelist user: <%= @user_whitelist.errors.full_messages.join(',') %>');
+} else {
+    $('#empty-modal-notice').html('User successfully added to whitelist');
+    userTable.destroy();
+    $('#whitelist-section').empty();
+    $('#whitelist-section').html("<%= escape_javascript(render partial: 'whitelist_content') %>");
+}
+$('#empty-modal').modal('show');

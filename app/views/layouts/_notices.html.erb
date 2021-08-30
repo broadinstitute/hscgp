@@ -1,0 +1,23 @@
+<% unless notice.nil? && alert.nil? %>
+	<div class="modal fade" id="message_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<button class="close" data-dismiss="modal">×</button>
+					<br/>
+					<p class="text-success text-center"><%= !notice.nil? ? notice.html_safe : nil %></p>
+					<p class="text-danger text-center"><strong><%= !alert.nil? ? alert.html_safe : nil %></strong></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<%= javascript_tag do %>
+		$("#message_modal").modal("show");
+
+		setTimeout(function() {
+			$("#message_modal").modal("hide");
+		}, 3000);
+
+	<% end %>
+<% end %>

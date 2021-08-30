@@ -1,0 +1,58 @@
+// render target for heatmap
+$('#search-target').html("<%= escape_javascript(render partial: 'precomputed_analysis') %>");
+
+$(document).ready(function() {
+
+	var fullSize = $('#heatmap-target').width() - 30;
+
+	// format data
+	var data = <%= raw @data.to_json %>;
+
+	data[0].colorscale = computeColorScale();
+
+	// layout
+	var layout = {
+		title: '<%= @precomputed_heatmap.title %>',
+		font: plotlyLabelFont,
+		width: fullSize,
+		margin: {
+			l: <%= @precomputed_heatmap.features.max_by(&:length).size * 6 %>,
+		},
+		yaxis: {
+			ticks: ""
+		},
+		xaxis: {
+			ticks: ""
+		}
+	};
+
+	// render summary plots
+	Plotly.newPlot('heatmap-target', data, layout);
+
+	// resize on window drag end
+	$(window).on('resizeEnd', function() {
+		var fullUpdate = {width: $('#heatmap-target').width() - 30 };
+
+		// check to see if columns have switched to responsive layout
+		Plotly.relayout('heatmap-target', fullUpdate);
+
+	});
+
+	// change listener for colorscale picker
+	$("#colorscale").change(function() {
+
+		var theme = $(this).val();
+		data[0].colorscale = theme;
+		console.log("setting colorscale to " + theme);
+
+		Plotly.newPlot('heatmap-target', data, layout);
+	});
+
+	// stop spinner
+	$('body').data('spinner').stop();
+
+	// log traffic
+	if (<%= Rails.env == 'production' %>) {
+		gaTrack('<%= request.fullpath %>', 'HSCGP Portal (Precomputed View)');
+	};
+});

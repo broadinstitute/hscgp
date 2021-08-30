@@ -1,0 +1,146 @@
+// render results table
+$('#search-target').html("<%= escape_javascript(render(partial: 'genotype_search_results')) %>");
+
+// render tooltips
+$('[data-toggle="tooltip"]').tooltip();
+
+// instantiate DataTable
+var table = $('#results').DataTable({
+	"order": [[0, 'asc'],[1, 'asc'], [2, 'asc']],
+	language: {
+		search: "Filter All Results: "
+	},
+	buttons: [
+		'copy', 'csv', 'excel', 'colvis'
+	],
+	columnDefs: [
+		{ type: 'natural', targets: 0 }
+	]
+});
+
+// attach search fields and listener to perform column searching
+$('#results tfoot th').each( function () {
+	var title = $(this).text();
+	$(this).html( '<input type="text" class="form-control" placeholder="Search '+ title +'" />' );
+} );
+
+// perform search on data entry
+table.columns().every( function () {
+	var that = this;
+	$( 'input', this.footer() ).on( 'keyup change', function () {
+		if ( that.search() !== this.value ) {
+			that.search( this.value ).draw();
+		}
+	} );
+} );
+
+// reattach tooltips on paging or redraw
+table.on('draw.dt', function() {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+
+// move all controls outside table to fix scrolling issues once DOM is rendered
+$(document).ready(function() {
+	// construct plotly vars
+	<% @genotype_data.sort_by {|k,v| k}.each do |genotype, data| %>
+		var <%= genotype %>_genotype = {
+			x: <%= raw data.keys %>,
+			y: <%= raw data.values %>,
+			name: '<%= genotype %>',
+			type: 'bar'
+		};
+
+	<% end %>
+
+	var genotypeData = [];
+	<% @genotype_data.each_key do |genotype| %>
+		genotypeData.push(<%= genotype %>_genotype);
+	<% end %>
+	$(genotypeData).each(function(i) {
+		this.marker = {color: colorbrewer.Set1[3][i]};
+	});
+
+	// check to see if columns have switched to responsive layout
+	var fullSize = $('#search-target').width() - 30;
+
+	// layouts
+	var layout = {
+		title: 'Genotype Distribution',
+		font: plotlyLabelFont,
+		width: fullSize
+	};
+
+	// render summary plots
+	Plotly.newPlot('basic-stats-chart', genotypeData, layout);
+
+	// resize on window drag end
+	$(window).on('resizeEnd', function() {
+		var fullUpdate = {width: $('#search-target').width() - 30 };
+
+		// check to see if columns have switched to responsive layout
+		Plotly.relayout('basic-stats-chart', fullUpdate);
+
+	});
+
+	// since result set is smaller, always render cirocs plot
+
+	<% @scatter_results.each_with_index do |(genotype, data), index| %>
+		var SCATTER_<%= genotype.upcase %>  = [ "SCATTER_<%= genotype.upcase %>" , {
+			SCATTERRadius: 215 + (<%= index * 5 %>),
+			innerCircleSize: 1,
+			outerCircleSize: 2,
+			innerCircleColor: colorbrewer.Set1[3][<%= index %>],
+			outerCircleColor: colorbrewer.Set1[3][<%= index %>],
+			innerPointType: "circle", //circle,rect
+			outerPointType: "circle", //circle,rect
+			innerrectWidth: 2,
+			innerrectHeight: 2,
+			outerrectWidth: 10,
+			outerrectHeight: 10,
+			outerCircleOpacity: 1,
+			random_data: 0
+		} ,
+			<%= raw data.to_json %>
+		];
+
+	<% end %>
+
+	BioCircos01 = new BioCircos(BACKGROUND02,
+				<% @scatter_results.each_key do |key| %>
+					SCATTER_<%= key.upcase %>,
+				<% end %>
+					BioCircosGenome, {
+		target : "biocircos",
+		svgWidth : 900,
+		svgHeight : 600,
+		chrPad : 0.04,
+		innerRadius: 246,
+		outerRadius: 270,
+		SCATTERMouseOverDisplay : true,
+		SCATTERMouseOverColor : "red",
+		SCATTERMouseOverTooltipsHtml01 : "chrom : ",
+		SCATTERMouseOverTooltipsHtml04 : "<br>cell line: ",
+		SCATTERMouseOverTooltipsHtml05 : "<br>genotype: ",
+		SCATTERMouseOverTooltipsBorderWidth : 1,
+		SCATTERMouseOutDisplay : true,
+		SCATTERMouseOutAnimationTime : 0,
+		SCATTERMouseOutColor : "none",
+		SCATTERMouseOutCircleSize : "none",
+		SCATTERMouseOutCircleOpacity : 1.0,
+		SCATTERMouseOutCircleStrokeWidth : 0,
+		SCATTERMouseOverTooltipsBackgroundColor : "white",
+		SCATTERMouseOverTooltipsBorderStyle : "solid",
+		SCATTERMouseOverTooltipsPadding : "3px",
+		SCATTERMouseOverTooltipsBorderRadius : "3px",
+	});
+
+	BioCircos01.draw_genome(BioCircos01.genomeLength);
+
+	// stop spinner
+	$('body').data('spinner').stop();
+
+	// log traffic
+	if (<%= Rails.env == 'production' %>) {
+		gaTrack('<%= request.fullpath %>', 'HSCGP Portal (Genotype Search)');
+	};
+});
