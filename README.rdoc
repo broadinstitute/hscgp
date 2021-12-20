@@ -1,5 +1,6 @@
-= HUMAN STEM CELL GENOMICS PORTAL
-[![DOI](https://zenodo.org/badge/323656721.svg)](https://zenodo.org/badge/latestdoi/323656721)
+= HUMAN STEM CELL GENOMICS PORTAL 
+
+{rdoc-image:https://zenodo.org/badge/323656721.svg}[https://zenodo.org/badge/latestdoi/323656721]
 
 == SETUP
 
